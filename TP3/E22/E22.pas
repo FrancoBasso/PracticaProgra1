@@ -2,7 +2,7 @@
 Program E22;
 
 Var 
-   car:  Char;
+   car,car2:  Char;
    capi:  char;
    contCua,contV,maxvocales:  byte;
    palabra,palabramax:  string;
@@ -26,12 +26,19 @@ Begin
 
                End;
                palabra := palabra+car;
+               car2 := car;
                Read(arch,car);
+               If car=' ' Then
+                  Begin
+                     If capi=car2 Then
+                        contCua := contCua+1;
+
+                  End;
+
 
 
             End;
-         If capi=car Then
-            contCua := contCua+1;
+
 
          If contV>maxvocales Then
             Begin
