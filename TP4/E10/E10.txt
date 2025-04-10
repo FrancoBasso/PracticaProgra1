@@ -1,0 +1,30 @@
+
+ProcedureAAA(Var C : char; Var N:byte; x,y:real );
+………………….
+Function BBB( M:integer; B:boolean):  char;
+…………………
+Function CCC(Car : char; W:real):  Boolean;
+……………………
+Procedure DDD(varN,M:integer);
+………………………
+
+Var 
+   Car:  char;
+   M, Z, W :  real;
+   P:  byte;
+   N:  integer;
+Begin
+   Readln(Z, W);
+   AAA (‘c’, P, Z, W);
+   //'c' no esta parametrizado correctamente ,se apso una constante en vez de una variable
+   If CCC( BBB( N, Z<> W), 5.4) Then
+   //N en al aparametrizacion de BBB no tiene ningun valor asignado
+      DDD(N, M)
+      // M esta mal parametrizado y declarado deberia ser un integer y esta declarado como real
+   Else
+      DDD(12.5, N-2);
+   // mal parametrizado 12.5 es un real y tendria que ir en su lugar un integer
+   Write (BBB(20, P=0));
+  
+   Write (AAA(Car, P, M, Z));
+   // no se puede escribir un procedimiento.
