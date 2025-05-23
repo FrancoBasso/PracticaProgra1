@@ -1,0 +1,5 @@
+
+Program parcial;
+Begin
+
+End.

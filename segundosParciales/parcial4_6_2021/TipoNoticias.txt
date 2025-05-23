@@ -1,0 +1,5 @@
+3 Salud  
+2 Social     
+1 Política    
+5 Bélica  
+4 Policial 
