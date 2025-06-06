@@ -99,12 +99,12 @@ Begin
       End;
    menorProm := Vcod[posmenor];
 End;
-Function precio(pos,hora:byte;mat:TM;km:real):  real;
+Function calcularprecio(pos,hora:byte;mat:TM;km:real):  real;
 Begin
    If mat[pos,hora]<>0 Then
-      precio := (km*100)*mat[pos,hora]
+      calcularprecio := (km*100)*mat[pos,hora]
    Else
-      precio := 0;
+      calcularprecio := 0;
 End;
 Function cumple (mat:TM;i:byte):  Boolean;
 
@@ -112,7 +112,7 @@ Var
    j:  byte;
 Begin
    j := 1;
-   While (j<=N) And (mat[i,j]<>0) Do
+   While (j<=24) And (mat[i,j]<>0) Do
       j := j+1;
    cumple := j>24;
 End;
@@ -122,56 +122,68 @@ Var
    j,pos:  byte;
    max:  real;
 Begin
-   max := mat[i,j];
+   max := mat[i,1];
+   X := 1;
+   Vaux[X] := 1;
    For j:= 2 To 24 Do
       If mat[i,j]>max Then
-         max := mat[i,j];
-   For j:=1 To 24 Do
-      If mat[i,j]=max Then
          Begin
-            X := X+1;
-            Vaux[X] := J;
-         End;
+            Max := mat[i,j];
+            X := 1;
+            Vaux[X] := j;
+         End
+      Else
+         If mat[i,j]=max Then
+            Begin
+               X := X+1;
+               Vaux[X] := j;
+            End;
+
 End;
-Procedure insertaordenado(cod:ST4;Var Vgen:TR;Var L:byte;hora:byte);
+Procedure insertaordenado(cod:ST4; hora:byte; Var Vgen:TR; Var L:byte);
 
 Var 
    J:  byte;
 Begin
    J := L;
-   While (j>=1) And (cod<Vgen[j].cod) Do
+   While (J >= 1) And (cod < Vgen[J].cod) Do
       Begin
-         Vgen[j+1].cod := Vgen[j].cod;
-         j := j-1;
+         Vgen[J+1] := Vgen[J];
+         // copia todo el registro completo
+         J := J - 1;
       End;
-   Vgen[j+1].cod := cod;
-   Vgen[j+1].hora := hora;
-   L := L+1;
+   Vgen[J+1].cod := cod;
+   Vgen[J+1].hora := hora;
+   L := L + 1;
 End;
-Procedure generarOtro(Vcod:TV;mat:TM;N:byte; Var Vgen:TR;Var L:byte);
+
+Procedure generarOtro(Vcod:TV; mat:TM; N:byte; Var Vgen:TR; Var L:byte);
 
 Var 
    Vaux:  TVA;
-   X:  byte;
-   j,i:  byte;
+   X, i, j:  byte;
 Begin
    L := 0;
-   For i:=1 To N Do
-      If cumple(mat,i) Then
+   For i := 1 To N Do
+      If cumple(mat, i) Then
          Begin
             X := 0;
-            mascara(mat,i,Vaux,X);
-            For j:= 1 To X Do
-               insertaordenado(Vcod[i],Vgen,l,Vaux[J]);
+            masCara(mat, i, Vaux, X);
+            For j := 1 To X Do
+               insertaordenado(Vcod[i], Vaux[j], Vgen, L);
          End;
 End;
-Procedure mostrar(Vgen:Treg;L:byte);
+
+Procedure mostrar(Vgen:TR;L:byte);
 
 Var 
    i:  byte;
 Begin
    For i:= 1 To L Do
-      WriteLn(Vgen[i].cod,'  ',Vgen[i].hora);
+      Begin
+         Writeln(Vgen[i].cod,'  ',Vgen[i].hora);
+      End;
+
 End;
 
 Var 
@@ -184,19 +196,21 @@ Var
    KM,precio:  real;
 Begin
    LeeArchivo(Vcod,mat,N);
-   WriteLn('codigo del menor promedio:',menorProm(Vcod.mat,N));
+   WriteLn('codigo del menor promedio:',menorProm(Vcod,mat,N));
    WriteLn('ingrese un codigo , hora y km recorridos ');
    ReadLn(cod,hora,km);
    pos := buscapos(Vcod,cod,N);
    If pos<>0 Then
-      If precio<>0 Then
-         Begin
-            precio := precio(pos,hora,mat,km);
-            If precio<>0 Then
-               WriteLn('el precio por los km recorridos es:',precio)
-            Else
-               WriteLn('la hora indicada no registra actividad ');
-         End
+      Begin
+         precio := calcularprecio(pos, hora, mat, km);
+
+         If precio<>0 Then
+            WriteLn('el precio por los km recorridos es:',precio)
+         Else
+            WriteLn('la hora indicada no registra actividad ');
+
+
+      End
    Else
       WriteLn('el codigo dado no es valido');
    generarOtro(Vcod,mat,N,Vgen,L);

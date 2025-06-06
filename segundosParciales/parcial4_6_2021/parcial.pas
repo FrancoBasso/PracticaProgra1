@@ -97,21 +97,31 @@ Begin
    Close(arch);
 
 End;
-Procedure Masnota(mat: TM; i, j, N: byte; Var posCad: byte; Var posNoticia: byte; Var maximo: word);
+Procedure Masnota(mat: TM; i, j, N: byte; Var posCad: byte; Var posNoticia: byte);
 Begin
-   If i = 0 Then
-      exit
-   Else If j = 0 Then
-           Masnota(mat, i - 1, N, N, posCad, posNoticia, maximo)
+   If (i=1) And (j=1) Then
+      Begin
+         posCad := 1;
+         posNoticia := 1;
+      End
+   Else
+      If (j = 0) Then
+         Begin
+            If (i > 1) Then
+               Masnota(mat, i - 1, N, N, posCad, posNoticia);
+         End
+
    Else
       Begin
-         If mat[i, j] > maximo Then
+         Masnota(mat, i, j - 1, N, posCad, posNoticia);
+
+         If mat[i, j] > mat[posCad,posNoticia] Then
             Begin
                posCad := i;
                posNoticia := j;
-               maximo := mat[i, j];
+
             End;
-         Masnota(mat, i, j - 1, N, posCad, posNoticia, maximo);
+
       End;
 End;
 
@@ -120,10 +130,12 @@ Begin
    If M=0 Then
       suma := 0
    Else
-      If M<>3 Then
-         suma := mat[pos,m] + suma(mat,pos,M-1)
+      If M=3 Then
+         suma := suma(mat,pos,M-1)
+
    Else
-      suma := suma(mat,pos,M-1);
+
+      suma := mat[pos,m] + suma(mat,pos,M-1)
 End;
 Function porcentaje(mat:TM;pos:byte;M:byte):  real;
 
@@ -170,15 +182,15 @@ Var
    mat:  TM;
    Vreg:  TR;
    L,N,M:  byte;
-   maximo:  word;
+
    posCad,posNoticia,pos:  byte;
    X:  ST3;
 Begin
    LeeCadenas(Vcad,M);
    Leetipo(Vtipo,N);
    LeeCoberturas(mat,Vcad,N,M);
-   maximo := 0;
-   Masnota(mat,M,N,N,posCad,posNoticia,maximo);
+
+   Masnota(mat,M,N,N,posCad,posNoticia);
    WriteLn('La cadena con mas notas es ',Vcad[posCad],' con el tema de ',Vtipo[posNoticia]);
    WriteLn('ingrese una cadena de noticias');
    ReadLn(X);
