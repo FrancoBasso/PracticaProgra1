@@ -1,0 +1,7 @@
+P01 Avengers        120
+P02 Batman          110
+P03 Spiderman       130
+P04 IronMan         125
+P05 Thor            115
+P06 Hulk            100
+P07 Flash           105
